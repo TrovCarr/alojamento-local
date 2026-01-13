@@ -110,6 +110,8 @@ app.post("/manutencoes", (req, res) => {
 });
 
 /* ===================== START ===================== */
+const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor UI+API em http://192.168.1.69:${PORT}`);
+  console.log("Servidor a correr na porta " + PORT);
 });
