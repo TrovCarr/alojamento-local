@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestão Alojamento Local</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
+    h1 { text-align: center; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { border: 1px solid #ddd; padding: 14px; border-radius: 8px; }
+    input, select, button { width: 100%; padding: 8px; margin-top: 8px; font-size: 14px; }
+    ul { list-style: none; padding: 0; }
+    li { border-bottom: 1px solid #eee; padding: 8px 0; }
+    .row { display: flex; gap: 10px; }
+    .row > * { flex: 1; }
+    .muted { color: #666; font-size: 12px; }
+    #app { display: none; }
+  </style>
+</head>
+<body>
+
+<h1>Gestão Alojamento Local</h1>
+
+<!-- LOGIN -->
+<div id="login" class="card">
+  <h2>Login</h2>
+  <input id="user" placeholder="Utilizador" />
+  <input id="pass" type="password" placeholder="Password" />
+  <button onclick="login()">Entrar</button>
+  <div id="loginErro" class="muted"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div class="card">
+    <h2>Alojamento selecionado</h2>
+    <select id="alojamentoSelect"></select>
+    <div class="muted">Escolhe o alojamento para filtrar.</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Adicionar Alojamento</h2>
+      <form id="formAlojamento">
+        <input id="nomeAloj" placeholder="Nome do alojamento" required />
+        <input id="endAloj" placeholder="Endereço" required />
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="listaAloj"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Adicionar Reserva</h2>
+      <form id="formReserva">
+        <input id="hospede" placeholder="Hóspede" required />
+        <div class="row">
+          <input id="checkin" type="date" required />
+          <input id="checkout" type="date" required />
+        </div>
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="listaReservas"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Limpeza</h2>
+      <form id="formLimpeza">
+        <input id="descLimpeza" placeholder="Descrição" required />
+        <input id="dataLimpeza" type="date" required />
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="listaLimpezas"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Manutenção</h2>
+      <form id="formManutencao">
+        <input id="descManut" placeholder="Descrição" required />
+        <input id="dataManut" type="date" required />
+        <button type="submit">Adicionar</button>
+      </form>
+      <ul id="listaManut"></ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = "";
+  let alojamentoSelecionado = null;
+
+  function login() {
+    const u = document.getElementById("user").value;
+    const p = document.getElementById("pass").value;
+
+    if (u === "daniel" && p === "1234") {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      carregarTudo();
+    } else {
+      document.getElementById("loginErro").innerText = "Credenciais inválidas";
+    }
+  }
+
+  async function fetchJSON(url, opts) {
+    const r = await fetch(url, opts);
+    return r.json();
+  }
+
+  async function carregarTudo() {
+    const alojamentos = await fetchJSON(API + "/alojamentos");
+    const sel = document.getElementById("alojamentoSelect");
+    sel.innerHTML = "";
+    alojamentos.forEach(a => {
+      const o = document.createElement("option");
+      o.value = a.id;
+      o.textContent = a.nome;
+      sel.appendChild(o);
+    });
+    alojamentoSelecionado = alojamentos[0]?.id;
+  }
+</script>
+
+</body>
+</html>
+
